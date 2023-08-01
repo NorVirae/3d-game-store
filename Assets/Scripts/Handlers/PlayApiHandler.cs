@@ -132,13 +132,23 @@ public class PlayApiHandler : MonoBehaviour
         PurchaseInventoryItemsRequest purchaseRequest = new()
         {
             AuthenticationContext = gameAuthContext,
+            Amount = 2,
             Item = new InventoryItemReference
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = "0f25236c-35f2-4696-9bf7-eef5d79ae40a",
+                AlternateId = new AlternateId
+                {
+                    Type = "Friendly ID",
+                    Value = "yul"
+                }
             },
-            CustomTags = new Dictionary<string, string>
-            {
-                { "server", Guid.NewGuid().ToString() }
+
+            PriceAmounts = new List<PurchasePriceAmount>{
+                new PurchasePriceAmount
+                {
+                    Amount = 20,
+                    ItemId = "a1188a84-e59a-45c5-9c8c-82bf426b3eae"
+                }
             }
         };
 
