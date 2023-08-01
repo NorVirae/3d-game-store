@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class InventoryUiHandler : MonoBehaviour
+public class InventoryHandler : MonoBehaviour
 {
     void Start()
     {
