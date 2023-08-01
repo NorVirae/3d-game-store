@@ -8,37 +8,35 @@ using UnityEngine;
 using System.Threading.Tasks;
 using PlayFab.EconomyModels;
 using System.Xml;
+using PlayFab.ClientModels;
 
 public class PlayApiHandler : MonoBehaviour
 {
     private static PlayFabAuthenticationContext gameAuthContext;
-    private static PlayFab.EconomyModels.EntityKey gameEntityKey = new()
-    {
-        Type = "title",
-        Id = PlayFabSettings.staticSettings.TitleId
-    };
+    private static PlayFab.EconomyModels.EntityKey gameEntityKey;
 
     private void Start()
     {
-        PlayFabEconomyInit();
+        gameEntityKey = new()
+        {
+            Type = "title",
+            Id = PlayFabSettings.staticSettings.TitleId
+        };
+        GuestLogin();
+        
+
     }
     // ENABLE_PLAYFABSERVER_API symbol denotes this is an admin-level game server and not a game client.
     private static async Task PlayFabEconomyInit()
     {
-        #if ENABLE_PLAYFABSERVER_API
-            string systemGUID = Environment.GetEnvironmentVariable("SYSTEM_GUID", EnvironmentVariableTarget.Process);
-            PlayFabSettings.staticSettings.DeveloperSecretKey =
-                Environment.GetEnvironmentVariable("PLAYFAB_SECRET_KEY", EnvironmentVariableTarget.Process);
-
-        #endif
-        PlayFabSettings.staticSettings.TitleId =
-            Environment.GetEnvironmentVariable("PLAYFAB_TITLE_ID", EnvironmentVariableTarget.Process);
+        
+        PlayFabSettings.staticSettings.TitleId = "10F24";
         PlayFab.EconomyModels.EntityKey gameEntityKey = new()
         {
             Type = "title",
             Id = PlayFabSettings.staticSettings.TitleId
         };
-
+        Debug.Log("Wetin");
         try
         {
             PlayFabAuthenticationAPI.GetEntityToken(
@@ -46,9 +44,7 @@ public class PlayApiHandler : MonoBehaviour
                 {
                     CustomTags = new Dictionary<string, string>
                     {
-                        #if ENABLE_PLAYFABSERVER_API
-                                        { "server", systemGUID }
-                        #endif
+                        { "server", Guid.NewGuid().ToString() }
                     }
                 },
                 (GetEntityTokenResponse) =>
@@ -59,16 +55,16 @@ public class PlayApiHandler : MonoBehaviour
                         EntityToken = GetEntityTokenResponse.EntityToken,
                     };
                 },
-                (PlayFabError) =>
+                (PlayFabError e) =>
                 {
-
+                    Debug.Log(e.ErrorMessage);
                 }
             );
             
         }
         catch (Exception e)
         {
-            Console.WriteLine(string.Format("PlayFab Auth Error: {0}", e));
+            Debug.Log(string.Format("PlayFab Auth Error: {0}", e));
             return;
         }
 
@@ -79,22 +75,22 @@ public class PlayApiHandler : MonoBehaviour
         CreateDraftItemRequest gameFireItem = new()
         {
             AuthenticationContext = gameAuthContext,
-            Item = new CatalogItem
+            Item = new PlayFab.EconomyModels.CatalogItem
             {
                 CreatorEntity = gameEntityKey,
                 Type = "catalogItem",
-                ContentType = "gameitem",
+                ContentType = "Game Time",
                 Title = new Dictionary<string, string>
-            {
-                { "NEUTRAL", "My Amazing Fire Item" },
-                { "en-us", "My Lit Lit Item" }
-            },
-                StartDate = DateTime.Now,
-                Tags = new List<string>
-            {
-              "desert"
-            }
-            },
+                {
+                    { "NEUTRAL", "My Amazing Fire Item" },
+                    { "en-us", "My Lit Lit Item" }
+                },
+                    StartDate = DateTime.Now,
+                    Tags = new List<string>
+                {
+                  "desert"
+                }
+                },
             Publish = true,
             CustomTags = new Dictionary<string, string>
         {
@@ -109,7 +105,6 @@ public class PlayApiHandler : MonoBehaviour
                 PlayFabEconomyAPI.AddInventoryItems(new AddInventoryItemsRequest { Amount = 50000, CollectionId = "" }, (GetEntityTokenResponse) =>
                 {
                     Debug.Log(successData);
-                    
                 },
                 (PlayFabError e) =>
                 {
@@ -125,7 +120,7 @@ public class PlayApiHandler : MonoBehaviour
         }
         catch (Exception e)
         {
-            Console.WriteLine(string.Format("PlayFab CreateDraftItem Error: {0}", e));
+            Debug.Log(string.Format("PlayFab CreateDraftItem Error: {0}", e));
             return;
         }
        
@@ -163,7 +158,7 @@ public class PlayApiHandler : MonoBehaviour
         }
         catch (Exception e)
         {
-            Console.WriteLine(string.Format("PlayFab CreateDraftItem Error: {0}", e));
+            Debug.Log(string.Format("PlayFab CreateDraftItem Error: {0}", e));
             return;
         }
     }
@@ -186,5 +181,29 @@ public class PlayApiHandler : MonoBehaviour
         {
             Debug.Log(e.ErrorMessage);
         });
+    }
+
+    public static async Task GuestLogin()
+    {
+        LoginWithCustomIDRequest loginWithCustomIDRequest = new()
+        {
+            CreateAccount = true,
+            CustomId = "#req45",
+            TitleId = "10F24"
+        };
+
+        PlayFabClientAPI.LoginWithCustomID(loginWithCustomIDRequest, (LoginResult result) =>
+        {
+            Debug.Log("Login successful");
+            PlayFabEconomyInit();
+            PublishGameItem();
+            PurchaseGameItem();
+            GetItemsInventory();
+        },
+        (PlayFabError e) =>
+        {
+            Debug.Log("Unable to Login" + e.ErrorMessage);
+        }
+        );
     }
 }
