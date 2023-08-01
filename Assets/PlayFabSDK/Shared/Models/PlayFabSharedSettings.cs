@@ -6,11 +6,11 @@ using PlayFab;
 #endif
 public class PlayFabSharedSettings : ScriptableObject
 {
-    public string TitleId;
+    public string TitleId = "10F24";
 
     internal string VerticalName = null;
 #if ENABLE_PLAYFABSERVER_API || ENABLE_PLAYFABADMIN_API || UNITY_EDITOR || ENABLE_PLAYFAB_SECRETKEY
-    public string DeveloperSecretKey;
+    public string DeveloperSecretKey = "Z85MNMYUMKHD8HA66JTIFT1UKSOWGBUWETZABX6CJ7O7UWQDCM";
 #endif
     public string ProductionEnvironmentUrl = "";
 
