@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using PlayFab.EconomyModels;
 using System.Xml;
 using PlayFab.ClientModels;
+using Newtonsoft.Json;
 
 public class PlayApiHandler : MonoBehaviour
 {
@@ -129,16 +130,16 @@ public class PlayApiHandler : MonoBehaviour
     public static async Task PurchaseGameItem()
     {
         // Continued from above example...
-        PurchaseInventoryItemsRequest purchaseRequest = new()
+        PurchaseItemRequest purchaseRequest = new()
         {
             AuthenticationContext = gameAuthContext,
             Amount = 2,
             Item = new InventoryItemReference
             {
-                Id = "0f25236c-35f2-4696-9bf7-eef5d79ae40a",
+                //Id = "0f25236c-35f2-4696-9bf7-eef5d79ae40a",
                 AlternateId = new AlternateId
                 {
-                    Type = "Friendly ID",
+                    Type = "FriendlyId",
                     Value = "yul"
                 }
             },
@@ -154,7 +155,7 @@ public class PlayApiHandler : MonoBehaviour
 
         try
         {
-            PlayFabEconomyAPI.PurchaseInventoryItems(purchaseRequest,
+            PlayFabClientAPI.PurchaseItem(purchaseRequest,
             (PurchaseInventoryItemsResponse successData) => 
             {
                 Debug.Log("Item Purchased");
@@ -186,7 +187,7 @@ public class PlayApiHandler : MonoBehaviour
 
         PlayFabEconomyAPI.GetInventoryItems(inventoryItemRequest, (GetInventoryItemsResponse successData) =>
         {
-            Debug.Log(successData);
+            Debug.Log(JsonConvert.SerializeObject(successData) + " CHECK THIS");
         }, (PlayFabError e) =>
         {
             Debug.Log(e.ErrorMessage);
