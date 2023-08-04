@@ -1,4 +1,4 @@
-#if ENABLE_PLAYFABADMIN_API
+//#if ENABLE_PLAYFABADMIN_API
 using System;
 using System.Collections.Generic;
 using PlayFab.SharedModels;
@@ -7474,4 +7474,4 @@ namespace PlayFab.AdminModels
         public int SecondsToRecharge;
     }
 }
-#endif
+//#endif
