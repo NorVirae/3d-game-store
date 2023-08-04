@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using PlayFab.EconomyModels;
 using System.Xml;
 using PlayFab.ClientModels;
+using Newtonsoft.Json;
+using PlayFab.AdminModels;
 
 public class PlayApiHandler : MonoBehaviour
 {
@@ -27,7 +29,7 @@ public class PlayApiHandler : MonoBehaviour
 
     }
     // ENABLE_PLAYFABSERVER_API symbol denotes this is an admin-level game server and not a game client.
-    private static async Task PlayFabEconomyInit()
+    private static void PlayFabEconomyInit()
     {
         
         PlayFabSettings.staticSettings.TitleId = "10F24";
@@ -69,7 +71,7 @@ public class PlayApiHandler : MonoBehaviour
         }
 
     }
-    public static async Task PublishGameItem()
+    public static void PublishGameItem()
     {
         // Continued from above example...
         CreateDraftItemRequest gameFireItem = new()
@@ -126,27 +128,33 @@ public class PlayApiHandler : MonoBehaviour
        
     }
 
-    public static async Task PurchaseGameItem()
+    public static void PurchaseGameItem()
     {
         // Continued from above example...
         PurchaseInventoryItemsRequest purchaseRequest = new()
         {
-            AuthenticationContext = gameAuthContext,
-            Amount = 2,
+            //AuthenticationContext = gameAuthContext,
+            Amount = 1,
+
+            //StoreId = "1ea5d018-b9a8-4f9a-ba69-9a73935b3457",
             Item = new InventoryItemReference
             {
-                Id = "0f25236c-35f2-4696-9bf7-eef5d79ae40a",
-                AlternateId = new AlternateId
-                {
-                    Type = "Friendly ID",
-                    Value = "yul"
-                }
+                Id = "87203d93-c228-44b8-b81b-8d278cdcda9e"
+                //AlternateId = new AlternateId
+                //{
+                //    Type = "FriendlyId",
+                //    Value = "yul"
+                // }
             },
-
+            Entity = new()
+            {
+                Type = "title_player_account",
+                Id = "362BF6719D3C0236",
+            },
             PriceAmounts = new List<PurchasePriceAmount>{
                 new PurchasePriceAmount
                 {
-                    Amount = 20,
+                    Amount = 1,
                     ItemId = "a1188a84-e59a-45c5-9c8c-82bf426b3eae"
                 }
             }
@@ -157,7 +165,7 @@ public class PlayApiHandler : MonoBehaviour
             PlayFabEconomyAPI.PurchaseInventoryItems(purchaseRequest,
             (PurchaseInventoryItemsResponse successData) => 
             {
-                Debug.Log("Item Purchased");
+                Debug.Log("Item Purchased WEEEEEEEEEE");
 
             }, (PlayFabError e) =>
             {
@@ -168,32 +176,73 @@ public class PlayApiHandler : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.Log(string.Format("PlayFab CreateDraftItem Error: {0}", e));
+            Debug.Log(string.Format("PlayFab Buy Error: {0}", e));
             return;
         }
     }
 
-    public static async Task GetItemsInventory()
+    //public static substractfrominventory()
+    //{
+    //    subtractinventoryitemsrequest subtractinventoryitemsrequest = new()
+    //    {
+    //        amount = 20,
+    //        item = new()
+    //        {
+    //            alternateid = new()
+    //            {
+    //                type = "friendlyid",
+    //                value = "gold"
+    //            }
+    //        }
+    //    },
+    //    playfabeconomyapi.subtractinventoryitems()
+    //}
+
+    public static void GetItemsInventory()
     {
         GetInventoryItemsRequest inventoryItemRequest = new()
         {
             AuthenticationContext = gameAuthContext,
-            CustomTags = new Dictionary<string, string>
-            {
-                { "server", Guid.NewGuid().ToString() }
-            }
+            //customtags = new dictionary<string, string>
+            //{
+            //    { "server", guid.newguid().tostring() }
+            //}
         };
-
+        
         PlayFabEconomyAPI.GetInventoryItems(inventoryItemRequest, (GetInventoryItemsResponse successData) =>
         {
-            Debug.Log(successData);
+            Debug.Log(JsonConvert.SerializeObject(successData) + " CHECK THIS");
         }, (PlayFabError e) =>
         {
             Debug.Log(e.ErrorMessage);
         });
     }
 
-    public static async Task GuestLogin()
+
+    public static void FetchApiPolicy(Action nextAction = null)
+    {
+        PlayFabAdminAPI.GetPolicy(new GetPolicyRequest()
+        {
+            PolicyName = "ApiPolicy"
+        }, result => {
+            Debug.Log(result.PolicyName);
+            foreach (var statement in result.Statements)
+            {
+                Debug.Log("Action: " + statement.Action);
+                Debug.Log("Comment: " + statement.Comment);
+                if (statement.ApiConditions != null)
+                    Debug.Log("ApiCondition.HashSignatureOrEncryption: " + statement.ApiConditions.HasSignatureOrEncryption);
+                Debug.Log("Effect: " + statement.Effect);
+                Debug.Log("Principal: " + statement.Principal);
+                Debug.Log("Resource: " + statement.Resource);
+            }
+
+            if (nextAction != null) nextAction();
+
+        }, error => Debug.LogError(error.GenerateErrorReport()));
+    }
+
+    public static void GuestLogin()
     {
         LoginWithCustomIDRequest loginWithCustomIDRequest = new()
         {
@@ -202,13 +251,17 @@ public class PlayApiHandler : MonoBehaviour
             TitleId = "10F24"
         };
 
+
+
         PlayFabClientAPI.LoginWithCustomID(loginWithCustomIDRequest, (LoginResult result) =>
         {
             Debug.Log("Login successful");
             PlayFabEconomyInit();
             PublishGameItem();
             PurchaseGameItem();
+            //FetchApiPolicy();
             GetItemsInventory();
+
         },
         (PlayFabError e) =>
         {
