@@ -22,8 +22,8 @@ public class PlayApiHandler : MonoBehaviour
             Type = "title",
             Id = PlayFabSettings.staticSettings.TitleId
         };
-        GuestLogin();
-       
+        //GuestLogin();
+
     }
     // ENABLE_PLAYFABSERVER_API symbol denotes this is an admin-level game server and not a game client.
     private static void PlayFabEconomyInit()

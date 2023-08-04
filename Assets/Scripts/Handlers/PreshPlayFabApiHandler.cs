@@ -22,7 +22,7 @@ public class PreshPlayFabApiHandler : MonoBehaviour
     { 
         var request =new LoginWithCustomIDRequest{
             CreateAccount = true,
-            CustomId = "#2UUPQC9Y9J",
+            CustomId = "#req45",
             TitleId= "10F24",
         };
 
@@ -43,16 +43,16 @@ public class PreshPlayFabApiHandler : MonoBehaviour
             Amount = 10,
             Entity =new PlayFab.EconomyModels.EntityKey 
             { 
-                Id = PlayFabSettings.staticSettings.TitleId,
-                Type= "title",
+                Id = "362BF6719D3C0236",
+                Type= "title_player_account",
             },
             Item =new InventoryItemReference
             {
-                Id= "yul",
+                Id= "87203d93-c228-44b8-b81b-8d278cdcda9e",
                 StackId="default"
             }
         };
-        print("working now");
+        //print("working now");
         PlayFabEconomyAPI.AddInventoryItems(request, onInventoryItemAdded, OnInventoryError);
 
     }

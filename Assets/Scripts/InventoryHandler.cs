@@ -1,3 +1,4 @@
+using GameModels;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,13 +6,48 @@ using UnityEngine.SceneManagement;
 
 public class InventoryHandler : MonoBehaviour
 {
+    [SerializeField] GameObject InventoryCardPrefab;
+    [SerializeField] Transform inventoryCardItemsContainer;
+
+    GameItem[] InventoryItems
+    {
+        get
+        {
+            if (GameManager.Instance == null) return null;
+            return GameManager.Instance.gameItemsSO.InvenoryItems;
+        }
+    }
+
     void Start()
     {
-        
+        updateInventoryItems();
     }
     
     public void OnStoreClicked()
     {
         SceneManager.LoadScene("InGameStore");
+    }
+
+    void updateInventoryItems()
+    {
+        foreach (Transform item in inventoryCardItemsContainer)
+        {
+            item.gameObject.SetActive(false);
+        }
+        for (int i = 0; i < InventoryItems.Length; i++)
+        {
+            if (i < inventoryCardItemsContainer.childCount)
+            {
+                inventoryCardItemsContainer.GetChild(i).gameObject.SetActive(true);
+
+                inventoryCardItemsContainer.GetChild(i).GetComponent<InventoryCardUi>()
+                    .UpdateInventoryItem(InventoryItems[i], i);
+            }
+            else
+            {
+                InventoryCardUi storeCard = Instantiate(InventoryCardPrefab).GetComponent<InventoryCardUi>();
+                storeCard.UpdateInventoryItem(InventoryItems[i], i);
+            }
+        }
     }
 }

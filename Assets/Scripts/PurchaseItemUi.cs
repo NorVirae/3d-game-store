@@ -16,9 +16,9 @@ public class PurchaseItemUi : MonoBehaviour
     public void UpdatePurchasePanel(StoreItem storeItem)
     {
         ItemImage.sprite = storeItem.ItemImage;
-        ItemAmountText.text=storeItem.Amount.ToString();
+        ItemAmountText.text="+"+storeItem.Amount.ToString();
         ItemPriceText.text=storeItem.price.ToString();
-        ItemDescriptionText.text = storeItem.price.ToString();
+        ItemDescriptionText.text = storeItem.Description.ToString();
         ItemName.text = storeItem.Name;
     }
 

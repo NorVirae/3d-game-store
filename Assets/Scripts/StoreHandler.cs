@@ -10,7 +10,13 @@ public class StoreHandler : MonoBehaviour
 
     [SerializeField] GameObject storeItemPrefab;
 
+    [SerializeField] Transform storeCardItemsContainer;
 
+    StoreItem[] storeItems { get
+        {
+            if(GameManager.Instance==null)return null;
+            return GameManager.Instance.gameItemsSO.StoreItems;
+        } }
 
     public static StoreHandler Instance;
 
@@ -18,15 +24,21 @@ public class StoreHandler : MonoBehaviour
     {
         Instance = this;
     }
-     
+
+    private void Start()
+    {
+        purchasePanel.gameObject.SetActive(false);
+        updateStoreItems();
+    }
+
     public void OnInventoryButtonClicked()
     {
         SceneManager.LoadScene("Inventory");
     }
-    public void UpdateAndDisplayPurchasePanel(StoreItem storeItem)
+    public void UpdateAndDisplayPurchasePanel(int index)
     {
         purchasePanel.gameObject.SetActive(true);
-        //purchasePanel.UpdatePurchasePanel(storeItem);
+        purchasePanel.UpdatePurchasePanel(storeItems[index]);
     }
 
     public void updateTokenUi()
@@ -41,6 +53,24 @@ public class StoreHandler : MonoBehaviour
 
     public void updateStoreItems()
     {
+        foreach(Transform item in storeCardItemsContainer)
+        {
+            item.gameObject.SetActive(false);
+        }
+        for(int i = 0; i < storeItems.Length; i++)
+        {if (i < storeCardItemsContainer.childCount)
+            {
+                storeCardItemsContainer.GetChild(i).gameObject.SetActive(true);
 
+                storeCardItemsContainer.GetChild(i).GetComponent<StoreCardItemUi>()
+                    .UpdateCardItem(storeItems[i],i);
+            }
+            else
+            {
+                StoreCardItemUi storeCard = Instantiate(storeItemPrefab).GetComponent<StoreCardItemUi>();
+                storeCard.UpdateCardItem(storeItems[i], i);
+            }
+            //storeCard
+        }
     }
 }
