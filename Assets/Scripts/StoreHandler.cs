@@ -8,6 +8,10 @@ public class StoreHandler : MonoBehaviour
 {
     [SerializeField] PurchaseItemUi purchasePanel;
 
+    [SerializeField] GameObject storeItemPrefab;
+
+
+
     public static StoreHandler Instance;
 
     private void Awake()
@@ -33,5 +37,10 @@ public class StoreHandler : MonoBehaviour
     public void OnTokenClicked()
     {
         SceneManager.LoadScene("TokenPurchase");
+    }
+
+    public void updateStoreItems()
+    {
+
     }
 }

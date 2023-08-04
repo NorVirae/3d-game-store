@@ -2,12 +2,10 @@ using PlayFab.AuthenticationModels;
 using PlayFab.SharedModels;
 using PlayFab;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using PlayFab.EconomyModels;
-using System.Xml;
 using PlayFab.ClientModels;
 
 public class PlayApiHandler : MonoBehaviour
@@ -23,8 +21,7 @@ public class PlayApiHandler : MonoBehaviour
             Id = PlayFabSettings.staticSettings.TitleId
         };
         GuestLogin();
-        
-
+       
     }
     // ENABLE_PLAYFABSERVER_API symbol denotes this is an admin-level game server and not a game client.
     private static async Task PlayFabEconomyInit()
