@@ -48,7 +48,7 @@ public class PreshPlayFabApiHandler : MonoBehaviour
             },
             Item =new InventoryItemReference
             {
-                Id= "87203d93-c228-44b8-b81b-8d278cdcda9e",
+                Id= "f986bbaa-260e-4542-b1f8-537852aefc6d",
                 StackId="default"
             }
         };
