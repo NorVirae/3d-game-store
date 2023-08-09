@@ -14,21 +14,21 @@ public class InventoryHandler : MonoBehaviour
         get
         {
             if (GameManager.Instance == null) return null;
-            return GameManager.Instance.gameItemsSO.InvenoryItems;
+            return GameManager.Instance.InvenoryItems.ToArray();
         }
     }
 
     void Start()
     {
-        updateInventoryItems();
+        UpdateInventoryItems();
     }
-    
+
     public void OnStoreClicked()
     {
         SceneManager.LoadScene("InGameStore");
     }
 
-    void updateInventoryItems()
+    void UpdateInventoryItems()
     {
         foreach (Transform item in inventoryCardItemsContainer)
         {

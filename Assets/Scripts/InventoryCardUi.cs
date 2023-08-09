@@ -16,14 +16,14 @@ public class InventoryCardUi : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
     public void UpdateInventoryItem(GameItem item, int index)
     {
         ItemImage.sprite = item.ItemImage;
-        ItemAmount.text = item.Amount.ToString();
-        ItemName.text = item.Name;
+        ItemAmount.text = item.GameItemAmount.ToString();
+        ItemName.text = item.GameItemName;
         Index = index;
     }
 }

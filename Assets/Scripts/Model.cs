@@ -8,17 +8,17 @@ namespace GameModels
     [Serializable]
     public class GameItem
     {
-
-        public string Name;
-        public string Description;
-        public int Amount;
+        public string GameItemId;
+        public string GameItemName;
+        public string GameItemDescription;
+        public int GameItemAmount;
         public Sprite ItemImage;
     }
-    
+
     [Serializable]
-    public class StoreItem: GameItem
+    public class GameStoreItem : GameItem
     {
-        public float price;
+        public float GameItemPrice;
     }
 
     [Serializable]

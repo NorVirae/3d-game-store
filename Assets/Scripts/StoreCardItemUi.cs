@@ -15,15 +15,15 @@ public class StoreCardItemUi : MonoBehaviour
     int Index;
     void Start()
     {
-        
+
     }
 
-    public void UpdateCardItem(StoreItem storeItem,int index)
+    public void UpdateCardItem(GameStoreItem storeItem, int index)
     {
-        storeItemName.text = storeItem.Name;
-        storeItemAmount.text="+"+storeItem.Amount.ToString();
-        storeItemPrice.text=storeItem.price.ToString()+"CC";
-        storeItemImage.sprite = storeItem.ItemImage;
+        storeItemName.text = storeItem.GameItemName;
+        storeItemAmount.text = "+" + storeItem.GameItemAmount.ToString();
+        storeItemPrice.text = storeItem.GameItemPrice.ToString() + "CC";
+        // storeItemImage.sprite = storeItem.ItemImage;
         Index = index;
     }
 

@@ -6,6 +6,7 @@ using PlayFab;
 using PlayFab.EconomyModels;
 using System;
 using Newtonsoft.Json;
+using GameModels;
 
 public class PreshPlayFabApiHandler : MonoBehaviour
 {
@@ -34,7 +35,9 @@ public class PreshPlayFabApiHandler : MonoBehaviour
     {
         // print("user Auth success");
         // Invoke(nameof(AddInventoryItem), 1);
-        Invoke(nameof(GetPlayerInventoryItems), 1);
+        // Invoke(nameof(GetPlayerInventoryItems), 1);
+        Invoke(nameof(GetStoreItems), 0);
+
     }
 
     //Adds Iventory Item
@@ -97,5 +100,52 @@ public class PreshPlayFabApiHandler : MonoBehaviour
             var item = result.Items[i];
             print(JsonConvert.SerializeObject(item.DisplayProperties));
         }
+    }
+
+    private void GetStoreItems()
+    {
+        var request = new SearchItemsRequest
+        {
+            Filter = "Id eq '1ea5d018-b9a8-4f9a-ba69-9a73935b3457'"
+        };
+        PlayFabEconomyAPI.SearchItems(request, OnStoreItemsRetrieved, onError);
+    }
+
+    private void OnStoreItemsRetrieved(SearchItemsResponse result)
+    {
+
+        // print(JsonConvert.SerializeObject(result.Items[0].ItemReferences));
+        for (int i = 0; i < result.Items[0].ItemReferences.Count; i++)
+        {
+            var itemRef = result.Items[0].ItemReferences[i];
+            GetItemById(itemRef.Id);
+        }
+        // print(result.Items.Count);
+
+    }
+
+    private void GetItemById(string id)
+    {
+        var request = new GetItemRequest
+        {
+            Id = id
+        };
+        PlayFabEconomyAPI.GetItem(request, (GetItemResponse result) =>
+        {
+
+            // print(JsonConvert.SerializeObject(result.Item));
+            var catItem = result.Item;
+            GameStoreItem item = new GameStoreItem
+            {
+                GameItemId = catItem.Id,
+                GameItemName = catItem.Title.GetValueOrDefault("NEUTERAL"),
+                GameItemDescription = catItem.Description.GetValueOrDefault("NEUTERAL"),
+                GameItemAmount = 10,
+                GameItemPrice = catItem.PriceOptions.Prices[0].Amounts[0].Amount,
+                // ItemImage = catItem.Images[0];
+            };
+            print(catItem.Images[0].Url);
+            GameManager.Instance.StoreItems.Add(item);
+        }, onError);
     }
 }

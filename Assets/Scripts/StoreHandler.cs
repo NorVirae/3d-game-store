@@ -12,11 +12,14 @@ public class StoreHandler : MonoBehaviour
 
     [SerializeField] Transform storeCardItemsContainer;
 
-    StoreItem[] storeItems { get
+    GameStoreItem[] storeItems
+    {
+        get
         {
-            if(GameManager.Instance==null)return null;
-            return GameManager.Instance.gameItemsSO.StoreItems;
-        } }
+            if (GameManager.Instance == null) return null;
+            return GameManager.Instance.StoreItems.ToArray();
+        }
+    }
 
     public static StoreHandler Instance;
 
@@ -28,7 +31,7 @@ public class StoreHandler : MonoBehaviour
     private void Start()
     {
         purchasePanel.gameObject.SetActive(false);
-        updateStoreItems();
+        Invoke(nameof(updateStoreItems), (storeItems.Length > 0) ? 0 : 5);
     }
 
     public void OnInventoryButtonClicked()
@@ -43,7 +46,7 @@ public class StoreHandler : MonoBehaviour
 
     public void updateTokenUi()
     {
-
+        
     }
 
     public void OnTokenClicked()
@@ -53,17 +56,18 @@ public class StoreHandler : MonoBehaviour
 
     public void updateStoreItems()
     {
-        foreach(Transform item in storeCardItemsContainer)
+        foreach (Transform item in storeCardItemsContainer)
         {
             item.gameObject.SetActive(false);
         }
-        for(int i = 0; i < storeItems.Length; i++)
-        {if (i < storeCardItemsContainer.childCount)
+        for (int i = 0; i < storeItems.Length; i++)
+        {
+            if (i < storeCardItemsContainer.childCount)
             {
                 storeCardItemsContainer.GetChild(i).gameObject.SetActive(true);
 
                 storeCardItemsContainer.GetChild(i).GetComponent<StoreCardItemUi>()
-                    .UpdateCardItem(storeItems[i],i);
+                    .UpdateCardItem(storeItems[i], i);
             }
             else
             {
@@ -74,5 +78,5 @@ public class StoreHandler : MonoBehaviour
         }
     }
 
-    
+
 }

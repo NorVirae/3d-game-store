@@ -13,13 +13,13 @@ public class PurchaseItemUi : MonoBehaviour
     [SerializeField] TextMeshProUGUI ItemDescriptionText;
     [SerializeField] TextMeshProUGUI ItemName;
 
-    public void UpdatePurchasePanel(StoreItem storeItem)
+    public void UpdatePurchasePanel(GameStoreItem storeItem)
     {
         ItemImage.sprite = storeItem.ItemImage;
-        ItemAmountText.text="+"+storeItem.Amount.ToString();
-        ItemPriceText.text=storeItem.price.ToString();
-        ItemDescriptionText.text = storeItem.Description.ToString();
-        ItemName.text = storeItem.Name;
+        ItemAmountText.text = "+" + storeItem.GameItemAmount.ToString();
+        ItemPriceText.text = storeItem.GameItemPrice.ToString();
+        ItemDescriptionText.text = storeItem.GameItemDescription.ToString();
+        ItemName.text = storeItem.GameItemName;
     }
 
     public void OnCancel()
@@ -29,6 +29,6 @@ public class PurchaseItemUi : MonoBehaviour
 
     public void OnPurChaseItem()
     {
-        
+        // FindAnyObjectByType<PlayApiHandler>()
     }
 }
