@@ -7,6 +7,7 @@ using PlayFab.EconomyModels;
 using System;
 using Newtonsoft.Json;
 using GameModels;
+using System.Threading.Tasks;
 
 public class PreshPlayFabApiHandler : MonoBehaviour
 {
@@ -36,8 +37,8 @@ public class PreshPlayFabApiHandler : MonoBehaviour
         // print("user Auth success");
         // Invoke(nameof(AddInventoryItem), 1);
         // Invoke(nameof(GetPlayerInventoryItems), 1);
-        Invoke(nameof(GetStoreItems), 0);
-
+        GetStoreItems();
+        // PurchaseGameItem("87203d93-c228-44b8-b81b-8d278cdcda9e");
     }
 
     //Adds Iventory Item
@@ -70,11 +71,6 @@ public class PreshPlayFabApiHandler : MonoBehaviour
     private void OnInventoryError(PlayFabError error)
     {
         print(error.ErrorMessage);
-    }
-
-    private void onError(PlayFabError error)
-    {
-        Debug.Log(error.ErrorMessage);
     }
 
     void GetPlayerInventoryItems()
@@ -113,18 +109,14 @@ public class PreshPlayFabApiHandler : MonoBehaviour
 
     private void OnStoreItemsRetrieved(SearchItemsResponse result)
     {
-
-        // print(JsonConvert.SerializeObject(result.Items[0].ItemReferences));
         for (int i = 0; i < result.Items[0].ItemReferences.Count; i++)
         {
             var itemRef = result.Items[0].ItemReferences[i];
-            GetItemById(itemRef.Id);
+            UpdateGameStoreItem(itemRef.Id);
         }
-        // print(result.Items.Count);
-
     }
 
-    private void GetItemById(string id)
+    public void UpdateGameStoreItem(string id)
     {
         var request = new GetItemRequest
         {
@@ -132,20 +124,46 @@ public class PreshPlayFabApiHandler : MonoBehaviour
         };
         PlayFabEconomyAPI.GetItem(request, (GetItemResponse result) =>
         {
-
-            // print(JsonConvert.SerializeObject(result.Item));
-            var catItem = result.Item;
-            GameStoreItem item = new GameStoreItem
-            {
-                GameItemId = catItem.Id,
-                GameItemName = catItem.Title.GetValueOrDefault("NEUTERAL"),
-                GameItemDescription = catItem.Description.GetValueOrDefault("NEUTERAL"),
-                GameItemAmount = 10,
-                GameItemPrice = catItem.PriceOptions.Prices[0].Amounts[0].Amount,
-                // ItemImage = catItem.Images[0];
-            };
-            print(catItem.Images[0].Url);
-            GameManager.Instance.StoreItems.Add(item);
+            GameManager.Instance.UpdateStoreItems(result.Item);
         }, onError);
     }
+
+    public void PurchaseGameItem(string id, int amount)
+    {
+
+        PurchaseInventoryItemsRequest purchaseRequest = new()
+        {
+            // AuthenticationContext = gameAuthContext,
+            Amount = amount,
+
+            Item = new InventoryItemReference
+            {
+                Id = id,
+                StackId = "default"
+            },
+            Entity = new PlayFab.EconomyModels.EntityKey
+            {
+                Id = "362BF6719D3C0236",
+                Type = "title_player_account",
+            },
+            PriceAmounts = new List<PurchasePriceAmount>{
+                new PurchasePriceAmount{
+                    ItemId=id,
+                    StackId="default",
+                    Amount=amount
+                }
+            }
+        };
+        print(purchaseRequest.Item.Id);
+        PlayFabEconomyAPI.PurchaseInventoryItems(purchaseRequest,
+            (PurchaseInventoryItemsResponse successData) =>
+            {
+
+            }, onError);
+    }
+    private void onError(PlayFabError error)
+    {
+        Debug.Log(error.ErrorMessage);
+    }
+
 }

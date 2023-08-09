@@ -130,7 +130,7 @@ public class PlayApiHandler : MonoBehaviour
         // Continued from above example...
         PurchaseInventoryItemsRequest purchaseRequest = new()
         {
-            //AuthenticationContext = gameAuthContext,
+            AuthenticationContext = gameAuthContext,
             Amount = amount,
 
             //StoreId = "1ea5d018-b9a8-4f9a-ba69-9a73935b3457",
