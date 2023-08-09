@@ -1,5 +1,7 @@
+using Newtonsoft.Json;
 using PlayFab;
 using PlayFab.ClientModels;
+using PlayFab.EconomyModels;
 using PlayFab.Json;
 using System;
 using System.Collections.Generic;
@@ -9,11 +11,10 @@ using UnityEngine.Purchasing;
 public class AndroidIAPExample : MonoBehaviour, IStoreListener
 {
     // Items list, configurable via inspector
-    private List<CatalogItem> Catalog;
+    private List<PlayFab.EconomyModels.CatalogItem> Catalog;
 
     // The Unity Purchasing system
     private static IStoreController m_StoreController;
-
     // Bootstrap the whole thing
     public void Start()
     {
@@ -37,10 +38,10 @@ public class AndroidIAPExample : MonoBehaviour, IStoreListener
         // Draw menu to purchase items
         foreach (var item in Catalog)
         {
-            if (GUILayout.Button("Buy " + item.DisplayName))
+            if (GUILayout.Button("Buy " + item.Title))
             {
                 // On button click buy a product
-                BuyProductID(item.ItemId);
+                BuyProductID(item.Id);
             }
         }
     }
@@ -54,7 +55,7 @@ public class AndroidIAPExample : MonoBehaviour, IStoreListener
             CreateAccount = true,
             AndroidDeviceId = SystemInfo.deviceUniqueIdentifier
         }, result => {
-            Debug.Log("Logged in");
+            Debug.Log("Logged in " + SystemInfo.deviceUniqueIdentifier);
             // Refresh available items
             RefreshIAPItems();
         }, error => Debug.LogError(error.GenerateErrorReport()));
@@ -62,9 +63,10 @@ public class AndroidIAPExample : MonoBehaviour, IStoreListener
 
     private void RefreshIAPItems()
     {
-        PlayFabClientAPI.GetCatalogItems(new GetCatalogItemsRequest(), result => {
-            Catalog = result.Catalog;
-
+        Debug.Log("got in here");
+        PlayFabEconomyAPI.SearchItems(new SearchItemsRequest(), result => {
+            Catalog = result.Items;
+            Debug.Log("Get Catalog");
             // Make UnityIAP initialize
             InitializePurchasing();
         }, error => Debug.LogError(error.GenerateErrorReport()));
@@ -78,12 +80,15 @@ public class AndroidIAPExample : MonoBehaviour, IStoreListener
 
         // Create a builder for IAP service
         var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance(AppStore.GooglePlay));
-
+        Debug.Log(JsonConvert.SerializeObject(Catalog) + " UWLAQ");
         // Register each item from the catalog
         foreach (var item in Catalog)
         {
-            builder.AddProduct(item.ItemId, ProductType.Consumable);
+            builder.AddProduct(item.Id, ProductType.Consumable);
+            Debug.Log("Add Product " + JsonConvert.SerializeObject(item));
         }
+
+        Debug.Log("Got in  to initialize");
 
         // Trigger IAP service initialization
         UnityPurchasing.Initialize(this, builder);
@@ -180,7 +185,7 @@ public class AndroidIAPExample : MonoBehaviour, IStoreListener
 
     public void OnInitializeFailed(InitializationFailureReason error, string message)
     {
-        throw new NotImplementedException();
+        Debug.Log("fAILED " + error + " " + message);
     }
 }
 

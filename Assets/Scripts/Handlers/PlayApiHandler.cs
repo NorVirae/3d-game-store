@@ -202,7 +202,7 @@ public class PlayApiHandler : MonoBehaviour
     {
         GetInventoryItemsRequest inventoryItemRequest = new()
         {
-            AuthenticationContext = gameAuthContext,
+            AuthenticationContext = gameAuthContext
             //customtags = new dictionary<string, string>
             //{
             //    { "server", guid.newguid().tostring() }
@@ -212,35 +212,16 @@ public class PlayApiHandler : MonoBehaviour
         PlayFabEconomyAPI.GetInventoryItems(inventoryItemRequest, (GetInventoryItemsResponse successData) =>
         {
             Debug.Log(JsonConvert.SerializeObject(successData) + " CHECK THIS");
+            foreach(var item in successData.Items)
+            {
+                Debug.Log(JsonConvert.SerializeObject(item) + " Callous");
+            }
         }, (PlayFabError e) =>
         {
             Debug.Log(e.ErrorMessage);
         });
     }
 
-
-    public static void FetchApiPolicy(Action nextAction = null)
-    {
-        PlayFabAdminAPI.GetPolicy(new GetPolicyRequest()
-        {
-            PolicyName = "ApiPolicy"
-        }, result => {
-            Debug.Log(result.PolicyName);
-            foreach (var statement in result.Statements)
-            {
-                Debug.Log("Action: " + statement.Action);
-                Debug.Log("Comment: " + statement.Comment);
-                if (statement.ApiConditions != null)
-                    Debug.Log("ApiCondition.HashSignatureOrEncryption: " + statement.ApiConditions.HasSignatureOrEncryption);
-                Debug.Log("Effect: " + statement.Effect);
-                Debug.Log("Principal: " + statement.Principal);
-                Debug.Log("Resource: " + statement.Resource);
-            }
-
-            if (nextAction != null) nextAction();
-
-        }, error => Debug.LogError(error.GenerateErrorReport()));
-    }
 
     public static void GuestLogin()
     {
