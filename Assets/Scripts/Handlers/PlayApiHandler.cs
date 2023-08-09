@@ -2,12 +2,10 @@ using PlayFab.AuthenticationModels;
 using PlayFab.SharedModels;
 using PlayFab;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using PlayFab.EconomyModels;
-using System.Xml;
 using PlayFab.ClientModels;
 using Newtonsoft.Json;
 using PlayFab.AdminModels;
@@ -24,14 +22,13 @@ public class PlayApiHandler : MonoBehaviour
             Type = "title",
             Id = PlayFabSettings.staticSettings.TitleId
         };
-        GuestLogin();
-        
+        //GuestLogin();
 
     }
     // ENABLE_PLAYFABSERVER_API symbol denotes this is an admin-level game server and not a game client.
     private static void PlayFabEconomyInit()
     {
-        
+
         PlayFabSettings.staticSettings.TitleId = "10F24";
         PlayFab.EconomyModels.EntityKey gameEntityKey = new()
         {
@@ -62,7 +59,7 @@ public class PlayApiHandler : MonoBehaviour
                     Debug.Log(e.ErrorMessage);
                 }
             );
-            
+
         }
         catch (Exception e)
         {
@@ -87,12 +84,12 @@ public class PlayApiHandler : MonoBehaviour
                     { "NEUTRAL", "My Amazing Fire Item" },
                     { "en-us", "My Lit Lit Item" }
                 },
-                    StartDate = DateTime.Now,
-                    Tags = new List<string>
+                StartDate = DateTime.Now,
+                Tags = new List<string>
                 {
                   "desert"
                 }
-                },
+            },
             Publish = true,
             CustomTags = new Dictionary<string, string>
         {
@@ -117,7 +114,7 @@ public class PlayApiHandler : MonoBehaviour
             {
                 Debug.Log(e.ErrorMessage);
             });
-          
+
 
         }
         catch (Exception e)
@@ -125,16 +122,16 @@ public class PlayApiHandler : MonoBehaviour
             Debug.Log(string.Format("PlayFab CreateDraftItem Error: {0}", e));
             return;
         }
-       
+
     }
 
-    public static void PurchaseGameItem()
+    public static void PurchaseGameItem(int amount, PlayFab.EconomyModels.EntityKey entity, List<PurchasePriceAmount> priceAmounts)
     {
         // Continued from above example...
         PurchaseInventoryItemsRequest purchaseRequest = new()
         {
-            //AuthenticationContext = gameAuthContext,
-            Amount = 1,
+            AuthenticationContext = gameAuthContext,
+            Amount = amount,
 
             //StoreId = "1ea5d018-b9a8-4f9a-ba69-9a73935b3457",
             Item = new InventoryItemReference
@@ -146,24 +143,14 @@ public class PlayApiHandler : MonoBehaviour
                 //    Value = "yul"
                 // }
             },
-            Entity = new()
-            {
-                Type = "title_player_account",
-                Id = "362BF6719D3C0236",
-            },
-            PriceAmounts = new List<PurchasePriceAmount>{
-                new PurchasePriceAmount
-                {
-                    Amount = 1,
-                    ItemId = "a1188a84-e59a-45c5-9c8c-82bf426b3eae"
-                }
-            }
+            Entity = entity,
+            PriceAmounts = priceAmounts
         };
 
         try
         {
             PlayFabEconomyAPI.PurchaseInventoryItems(purchaseRequest,
-            (PurchaseInventoryItemsResponse successData) => 
+            (PurchaseInventoryItemsResponse successData) =>
             {
                 Debug.Log("Item Purchased WEEEEEEEEEE");
 
@@ -208,7 +195,7 @@ public class PlayApiHandler : MonoBehaviour
             //    { "server", guid.newguid().tostring() }
             //}
         };
-        
+
         PlayFabEconomyAPI.GetInventoryItems(inventoryItemRequest, (GetInventoryItemsResponse successData) =>
         {
             Debug.Log(JsonConvert.SerializeObject(successData) + " CHECK THIS");
@@ -224,7 +211,8 @@ public class PlayApiHandler : MonoBehaviour
         PlayFabAdminAPI.GetPolicy(new GetPolicyRequest()
         {
             PolicyName = "ApiPolicy"
-        }, result => {
+        }, result =>
+        {
             Debug.Log(result.PolicyName);
             foreach (var statement in result.Statements)
             {
@@ -258,7 +246,17 @@ public class PlayApiHandler : MonoBehaviour
             Debug.Log("Login successful");
             PlayFabEconomyInit();
             PublishGameItem();
-            PurchaseGameItem();
+            PurchaseGameItem(1, new PlayFab.EconomyModels.EntityKey
+            {
+                Type = "title_player_account",
+                Id = "362BF6719D3C0236",
+            }, new List<PurchasePriceAmount>{
+                new PurchasePriceAmount
+                {
+                    Amount = 1,
+                    ItemId = "a1188a84-e59a-45c5-9c8c-82bf426b3eae"
+                }
+            });
             //FetchApiPolicy();
             GetItemsInventory();
 
