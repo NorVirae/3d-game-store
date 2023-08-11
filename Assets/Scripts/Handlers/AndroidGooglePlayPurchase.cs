@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
 {
@@ -28,40 +29,63 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
     }
     
 
-    public void OnGUI()
+    //public void OnGUI()
+    //{
+    //    // this line just scales the ui up for high-res devices
+    //    // comment it out if you find the ui too large.
+    //    GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, new Vector3(3, 3, 3));
+
+    //    // if we are not initialized, only draw a message
+    //    if (!IsInitialized)
+    //    {
+    //        GUILayout.Label("initializing iap and logging in...");
+    //        return;
+    //    }
+
+    //    // draw menu to purchase items
+    //    foreach (var item in Catalog)
+    //    {
+    //        if (GUILayout.Button("buy " + item.Title))
+    //        {
+    //            // on button click buy a product
+    //            BuyProductID(item.Id);
+    //        }
+    //    }
+    //}
+
+    public void FetchPlayerGoldBalance()
     {
-        // this line just scales the ui up for high-res devices
-        // comment it out if you find the ui too large.
-        GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, new Vector3(3, 3, 3));
-
-        // if we are not initialized, only draw a message
-        if (!IsInitialized)
+        var balanceRequest = new GetInventoryItemsRequest
         {
-            GUILayout.Label("initializing iap and logging in...");
-            return;
-        }
-
-        // draw menu to purchase items
-        foreach (var item in Catalog)
+            Filter = "Type eq 'currency'"
+        };
+        PlayFabEconomyAPI.GetInventoryItems(balanceRequest, result =>
         {
-            if (GUILayout.Button("buy " + item.Title))
+            Debug.Log(JsonConvert.SerializeObject(result.Items[0].Amount) + " WHOBA");
+            if (result.Items != null)
             {
-                // on button click buy a product
-                BuyProductID(item.Id);
+                balance.text = result.Items[0].Amount.ToString();
+                Debug.Log(balance.text + " WUTA");
             }
-        }
+        }, e =>
+        {
+            Debug.Log(e.ErrorMessage);
+        });
     }
 
     // This is invoked manually on Start to initiate login ops
     private void Login()
     {
         // Login with Android ID
-        PlayFabClientAPI.LoginWithAndroidDeviceID(new LoginWithAndroidDeviceIDRequest()
+        PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest()
         {
+
             CreateAccount = true,
-            AndroidDeviceId = SystemInfo.deviceUniqueIdentifier
+            CustomId = "#req45"
+            //AndroidDeviceId = SystemInfo.deviceUniqueIdentifier
         }, result => {
             Debug.Log("Logged in " + SystemInfo.deviceUniqueIdentifier);
+            FetchPlayerGoldBalance();
             // Refresh available items
             RefreshIAPItems();
         }, error => Debug.LogError(error.GenerateErrorReport()));
@@ -95,7 +119,7 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
         // Register each item from the catalog
         foreach (var item in Catalog)
         {
-            print(JsonConvert.SerializeObject(item) + " OBJECT");
+            //print(JsonConvert.SerializeObject(item) + " OBJECT");
             builder.AddProduct(item.Id, ProductType.Consumable);
         }
 
@@ -139,7 +163,30 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
         Debug.Log("OnInitializeFailed InitializationFailureReason: " + error);
     }
 
+    public void AddGoldToUser()
+    {
+        var AddGoldRequest = new AddInventoryItemsRequest
+        {
+            Amount = 100,
+            Item = new InventoryItemReference
+            {
+                AlternateId = new AlternateId
+                {
+                    Type = "FriendlyId",
+                    Value = "gold"
+                }
+            }
 
+        };
+        PlayFabEconomyAPI.AddInventoryItems(AddGoldRequest, result =>
+        {
+            Debug.Log(result + " REUSLT");
+            FetchPlayerGoldBalance();
+        }, e =>
+        {
+            Debug.Log(e.ErrorMessage + " Error");
+        });
+    }
 
     // This is invoked automatically when successful purchase is ready to be processed
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e)
@@ -168,27 +215,32 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
             return PurchaseProcessingResult.Complete;
         }
 
+        Debug.Log(JsonConvert.SerializeObject(e) + " TUKE");
+        AddGoldToUser();
+
         Debug.Log("Processing transaction: " + e.purchasedProduct.transactionID);
 
         // Deserialize receipt
-        var googleReceipt = GooglePurchase.FromJson(e.purchasedProduct.receipt);
+        //var googleReceipt = GooglePurchase.FromJson(e.purchasedProduct.receipt);
 
         // Invoke receipt validation
         // This will not only validate a receipt, but will also grant player corresponding items
         // only if receipt is valid.
-        PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
-        {
-            // Pass in currency code in ISO format
-            CurrencyCode = e.purchasedProduct.metadata.isoCurrencyCode,
-            // Convert and set Purchase price
-            PurchasePrice = (uint)(e.purchasedProduct.metadata.localizedPrice * 100),
-            // Pass in the receipt
-            ReceiptJson = googleReceipt.PayloadData.json,
-            // Pass in the signature
-            Signature = googleReceipt.PayloadData.signature
-        }, result => Debug.Log("Validation successful!"),
-           error => Debug.Log("Validation failed: " + error.GenerateErrorReport())
-        );
+        //PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
+        //{
+        //    // Pass in currency code in ISO format
+        //    CurrencyCode = e.purchasedProduct.metadata.isoCurrencyCode,
+        //    // Convert and set Purchase price
+        //    PurchasePrice = (uint)(e.purchasedProduct.metadata.localizedPrice * 100),
+        //    // Pass in the receipt
+        //    ReceiptJson = googleReceipt.PayloadData.json,
+        //    // Pass in the signature
+        //    Signature = googleReceipt.PayloadData.signature
+        //}, result => Debug.Log("Validation successful!"),
+        //   error => Debug.Log("Validation failed: " + error.GenerateErrorReport())
+        //);
+
+
 
         return PurchaseProcessingResult.Complete;
     }
