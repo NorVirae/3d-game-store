@@ -918,10 +918,10 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: aa63da86-aed6-45b4-aae5-8e17d10bad11
+  cloudProjectId: a682aeb4-7307-414b-9802-69d027aa95c5
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Game Items Store (1)
+  projectName: Game Items Store
   organizationId: vyrra
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

@@ -5,42 +5,48 @@ using PlayFab.EconomyModels;
 using PlayFab.Json;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Purchasing;
+using UnityEngine.Purchasing.Extension;
+using UnityEngine.UI;
 
-public class AndroidIAPExample : MonoBehaviour, IStoreListener
+public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
 {
     // Items list, configurable via inspector
     private List<PlayFab.EconomyModels.CatalogItem> Catalog;
-
+    public Text balance;
     // The Unity Purchasing system
     private static IStoreController m_StoreController;
+    private static IExtensionProvider m_StoreExtensionProvider;
     // Bootstrap the whole thing
     public void Start()
     {
         // Make PlayFab log in
         Login();
     }
+    
 
     public void OnGUI()
     {
-        // This line just scales the UI up for high-res devices
-        // Comment it out if you find the UI too large.
+        // this line just scales the ui up for high-res devices
+        // comment it out if you find the ui too large.
         GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, new Vector3(3, 3, 3));
 
         // if we are not initialized, only draw a message
         if (!IsInitialized)
         {
-            GUILayout.Label("Initializing IAP and logging in...");
+            GUILayout.Label("initializing iap and logging in...");
             return;
         }
 
-        // Draw menu to purchase items
+        // draw menu to purchase items
         foreach (var item in Catalog)
         {
-            if (GUILayout.Button("Buy " + item.Title))
+            if (GUILayout.Button("buy " + item.Title))
             {
-                // On button click buy a product
+                // on button click buy a product
                 BuyProductID(item.Id);
             }
         }
@@ -63,8 +69,12 @@ public class AndroidIAPExample : MonoBehaviour, IStoreListener
 
     private void RefreshIAPItems()
     {
+        var searchItemsRequest = new SearchItemsRequest()
+        {
+            Filter = "Type eq 'currency'"
+        };
         Debug.Log("got in here");
-        PlayFabEconomyAPI.SearchItems(new SearchItemsRequest(), result => {
+        PlayFabEconomyAPI.SearchItems(searchItemsRequest, result => {
             Catalog = result.Items;
             Debug.Log("Get Catalog");
             // Make UnityIAP initialize
@@ -79,17 +89,17 @@ public class AndroidIAPExample : MonoBehaviour, IStoreListener
         if (IsInitialized) return;
 
         // Create a builder for IAP service
-        var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance(AppStore.GooglePlay));
-        Debug.Log(JsonConvert.SerializeObject(Catalog) + " UWLAQ");
+        var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance(
+            //AppStore.GooglePlay
+            ));
         // Register each item from the catalog
         foreach (var item in Catalog)
         {
+            print(JsonConvert.SerializeObject(item) + " OBJECT");
             builder.AddProduct(item.Id, ProductType.Consumable);
-            Debug.Log("Add Product " + JsonConvert.SerializeObject(item));
         }
 
-        Debug.Log("Got in  to initialize");
-
+        builder.AddProduct("gold", ProductType.Consumable);
         // Trigger IAP service initialization
         UnityPurchasing.Initialize(this, builder);
     }
@@ -106,20 +116,30 @@ public class AndroidIAPExample : MonoBehaviour, IStoreListener
     // This is automatically invoked automatically when IAP service is initialized
     public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
     {
+        print("Initialised");
         m_StoreController = controller;
+
+        
+        //// Purchasing has succeeded initializing. Collect our Purchasing references.
+        //// Overall Purchasing system, configured with products for this application.
+        //m_StoreController = controller;
+        //// Store specific subsystem, for accessing device-specific store features.
+        //m_StoreExtensionProvider = extensions;
+        //
+        //foreach (var product in m_StoreController.products.all)
+        //{
+        //    Debug.Log(JsonConvert.SerializeObject(product) + " WHOLAGHJD");
+        //    m_StoreController.ConfirmPendingPurchase(product);
+        //}
     }
 
     // This is automatically invoked automatically when IAP service failed to initialized
     public void OnInitializeFailed(InitializationFailureReason error)
     {
-        Debug.Log("OnInitializeFailed InitializationFailureReason:" + error);
+        Debug.Log("OnInitializeFailed InitializationFailureReason: " + error);
     }
 
-    // This is automatically invoked automatically when purchase failed
-    public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
-    {
-        Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, failureReason));
-    }
+
 
     // This is invoked automatically when successful purchase is ready to be processed
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e)
@@ -174,7 +194,7 @@ public class AndroidIAPExample : MonoBehaviour, IStoreListener
     }
 
     // This is invoked manually to initiate purchase
-    void BuyProductID(string productId)
+    public void BuyProductID(string productId)
     {
         // If IAP service has not been initialized, fail hard
         if (!IsInitialized) throw new Exception("IAP Service is not initialized!");
@@ -186,6 +206,18 @@ public class AndroidIAPExample : MonoBehaviour, IStoreListener
     public void OnInitializeFailed(InitializationFailureReason error, string message)
     {
         Debug.Log("fAILED " + error + " " + message);
+    }
+
+    public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription)
+    {
+        Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, failureDescription));
+
+    }
+
+    public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
+    {
+        Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, failureReason));
+
     }
 }
 
@@ -203,21 +235,7 @@ public class JsonData
     public string purchaseToken;
 }
 
-public class PayloadData
-{
-    public JsonData JsonData;
 
-    // JSON Fields, ! Case-sensitive
-    public string signature;
-    public string json;
-
-    public static PayloadData FromJson(string json)
-    {
-        var payload = JsonUtility.FromJson<PayloadData>(json);
-        payload.JsonData = JsonUtility.FromJson<JsonData>(payload.json);
-        return payload;
-    }
-}
 
 public class GooglePurchase
 {
@@ -233,5 +251,25 @@ public class GooglePurchase
         var purchase = JsonUtility.FromJson<GooglePurchase>(json);
         purchase.PayloadData = PayloadData.FromJson(purchase.Payload);
         return purchase;
+    }
+
+    //Payload
+
+    
+}
+
+public class PayloadData
+{
+    public JsonData JsonData;
+
+    // JSON Fields, ! Case-sensitive
+    public string signature;
+    public string json;
+
+    public static PayloadData FromJson(string json)
+    {
+        var payload = JsonUtility.FromJson<PayloadData>(json);
+        payload.JsonData = JsonUtility.FromJson<JsonData>(payload.json);
+        return payload;
     }
 }

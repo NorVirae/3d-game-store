@@ -96,7 +96,7 @@ public class PlayApiHandler : MonoBehaviour
             { "server", Guid.NewGuid().ToString() }
         }
         };
-        PlayFabResult<CreateDraftItemResponse> gameDraftItemResponse = null;
+        //PlayFabResult<CreateDraftItemResponse> gameDraftItemResponse = null;
         try
         {
             PlayFabEconomyAPI.CreateDraftItem(gameFireItem, (CreateDraftItemResponse successData) =>
