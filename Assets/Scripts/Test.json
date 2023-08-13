@@ -1,38 +1,8 @@
-[
-    {
-        "Amount": null,
-        "Id": "87203d93-c228-44b8-b81b-8d278cdcda9e",
-        "PriceOptions": {
-            "Prices": [
-                {
-                    "Amounts": [
-                        {
-                            "Amount": 5,
-                            "ItemId": "a1188a84-e59a-45c5-9c8c-82bf426b3eae"
-                        }
-                    ],
-                    "UnitAmount": null,
-                    "UnitDurationInSeconds": null
-                }
-            ]
-        }
-    },
-    {
-        "Amount": null,
-        "Id": "f986bbaa-260e-4542-b1f8-537852aefc6d",
-        "PriceOptions": {
-            "Prices": [
-                {
-                    "Amounts": [
-                        {
-                            "Amount": 12,
-                            "ItemId": "a1188a84-e59a-45c5-9c8c-82bf426b3eae"
-                        }
-                    ],
-                    "UnitAmount": null,
-                    "UnitDurationInSeconds": null
-                }
-            ]
-        }
-    }
-]
+{
+    "Amount": 50,
+    "DisplayProperties": {},
+    "ExpirationDate": null,
+    "Id": "f986bbaa-260e-4542-b1f8-537852aefc6d",
+    "StackId": "default",
+    "Type": "catalogItem"
+}

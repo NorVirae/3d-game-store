@@ -60,7 +60,7 @@ public class StoreHandler : MonoBehaviour
         {
             item.gameObject.SetActive(false);
         }
-        print(storeItems.Length);
+        // print(storeItems.Length);
         for (int i = 0; i < storeItems.Length; i++)
         {
             if (i < storeCardItemsContainer.childCount)
