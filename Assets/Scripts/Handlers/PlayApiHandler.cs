@@ -96,7 +96,7 @@ public class PlayApiHandler : MonoBehaviour
             { "server", Guid.NewGuid().ToString() }
         }
         };
-        PlayFabResult<CreateDraftItemResponse> gameDraftItemResponse = null;
+        //PlayFabResult<CreateDraftItemResponse> gameDraftItemResponse = null;
         try
         {
             PlayFabEconomyAPI.CreateDraftItem(gameFireItem, (CreateDraftItemResponse successData) =>
@@ -182,7 +182,7 @@ public class PlayApiHandler : MonoBehaviour
     {
         GetInventoryItemsRequest inventoryItemRequest = new()
         {
-            AuthenticationContext = gameAuthContext,
+            AuthenticationContext = gameAuthContext
             //customtags = new dictionary<string, string>
             //{
             //    { "server", guid.newguid().tostring() }
@@ -192,6 +192,10 @@ public class PlayApiHandler : MonoBehaviour
         PlayFabEconomyAPI.GetInventoryItems(inventoryItemRequest, (GetInventoryItemsResponse successData) =>
         {
             Debug.Log(JsonConvert.SerializeObject(successData) + " CHECK THIS");
+            foreach(var item in successData.Items)
+            {
+                Debug.Log(JsonConvert.SerializeObject(item) + " Callous");
+            }
         }, (PlayFabError e) =>
         {
             Debug.Log(e.ErrorMessage);

@@ -5,25 +5,17 @@ using Newtonsoft.Json;
 using PlayFab.EconomyModels;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
+    private static GameManager instance;
+
+    
     public List<GameItem> InvenoryItems;
 
     public List<GameStoreItem> StoreItems;
 
-    public static GameManager Instance;
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+ 
+    
 
     public void UpdateStoreItems(CatalogItem catItem)
     {
