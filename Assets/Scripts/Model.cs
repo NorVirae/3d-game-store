@@ -11,20 +11,19 @@ namespace GameModels
         public string GameItemId;
         public string GameItemName;
         public string GameItemDescription;
-        public float GameItemAmount;
+        public int GameItemAmount;
         public Sprite ItemImage;
     }
 
     [Serializable]
     public class GameStoreItem : GameItem
     {
-        public GameCurrency GameItemPrice;
+        public float GameItemPrice;
     }
 
     [Serializable]
     public class GameCurrency
     {
-        public string currencyId;
         public string CurrencyName;
         public string Abrev;
         public int Amount;

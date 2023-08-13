@@ -22,7 +22,7 @@ public class StoreCardItemUi : MonoBehaviour
     {
         storeItemName.text = storeItem.GameItemName;
         storeItemAmount.text = "+" + storeItem.GameItemAmount.ToString();
-        storeItemPrice.text = storeItem.GameItemPrice.Amount.ToString() + "CC";
+        storeItemPrice.text = storeItem.GameItemPrice.ToString() + "CC";
         // storeItemImage.sprite = storeItem.ItemImage;
         Index = index;
     }

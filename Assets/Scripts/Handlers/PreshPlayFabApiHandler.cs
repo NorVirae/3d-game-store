@@ -1,17 +1,25 @@
 using PlayFab.ClientModels;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.EconomyModels;
+using System;
 using Newtonsoft.Json;
 using GameModels;
+using System.Threading.Tasks;
 
 public class PreshPlayFabApiHandler : MonoBehaviour
 {
+
+    //Get Inventory Item
+    //Get Store Item
+    // Get Currency
     void Start()
     {
         AutoLogin();
     }
+    //Login
     void AutoLogin()
     {
         var request = new LoginWithCustomIDRequest
@@ -26,8 +34,43 @@ public class PreshPlayFabApiHandler : MonoBehaviour
 
     private void onLoginSuccess(LoginResult obj)
     {
-        GetPlayerInventoryItems();
+        // print("user Auth success");
+        // Invoke(nameof(AddInventoryItem), 1);
+        // Invoke(nameof(GetPlayerInventoryItems), 1);
         GetStoreItems();
+        // PurchaseGameItem("87203d93-c228-44b8-b81b-8d278cdcda9e");
+    }
+
+    //Adds Iventory Item
+    void AddInventoryItem()
+    {
+        var request = new AddInventoryItemsRequest
+        {
+            Amount = 10,
+            Entity = new PlayFab.EconomyModels.EntityKey
+            {
+                Id = "362BF6719D3C0236",
+                Type = "title_player_account",
+            },
+            Item = new InventoryItemReference
+            {
+                Id = "87203d93-c228-44b8-b81b-8d278cdcda9e",
+                StackId = "default"
+            }
+        };
+        //print("working now");
+        PlayFabEconomyAPI.AddInventoryItems(request, onInventoryItemAdded, OnInventoryError);
+
+    }
+
+    private void onInventoryItemAdded(AddInventoryItemsResponse result)
+    {
+        print("worked");
+    }
+
+    private void OnInventoryError(PlayFabError error)
+    {
+        print(error.ErrorMessage);
     }
 
     void GetPlayerInventoryItems()
@@ -47,12 +90,11 @@ public class PreshPlayFabApiHandler : MonoBehaviour
 
     private void OnGetInventorySuccess(GetInventoryItemsResponse result)
     {
-        // print(JsonConvert.SerializeObject(result));
+        print(JsonConvert.SerializeObject(result));
         for (int i = 0; i < result.Items.Count; i++)
         {
             var item = result.Items[i];
-            // print(JsonConvert.SerializeObject(item));
-            GameManager.Instance.UpdateInventoryItems(item);
+            print(JsonConvert.SerializeObject(item.DisplayProperties));
         }
     }
 
@@ -86,17 +128,18 @@ public class PreshPlayFabApiHandler : MonoBehaviour
         }, onError);
     }
 
-    public void PurchaseGameItem(string id, float amount, GameCurrency currency)
+    public void PurchaseGameItem(string id, int amount)
     {
 
         PurchaseInventoryItemsRequest purchaseRequest = new()
         {
             // AuthenticationContext = gameAuthContext,
-            Amount = (int?)amount,
+            Amount = amount,
 
             Item = new InventoryItemReference
             {
                 Id = id,
+                StackId = "default"
             },
             Entity = new PlayFab.EconomyModels.EntityKey
             {
@@ -105,19 +148,22 @@ public class PreshPlayFabApiHandler : MonoBehaviour
             },
             PriceAmounts = new List<PurchasePriceAmount>{
                 new PurchasePriceAmount{
-                    ItemId="a1188a84-e59a-45c5-9c8c-82bf426b3eae",
-                    Amount= (int)currency.Amount
+                    ItemId=id,
+                    StackId="default",
+                    Amount=amount
                 }
             }
         };
+        print(purchaseRequest.Item.Id);
         PlayFabEconomyAPI.PurchaseInventoryItems(purchaseRequest,
             (PurchaseInventoryItemsResponse successData) =>
             {
-                GetPlayerInventoryItems();
+
             }, onError);
     }
     private void onError(PlayFabError error)
     {
-        Debug.Log(error);
+        Debug.Log(error.ErrorMessage);
     }
+
 }
