@@ -22,7 +22,7 @@ public class PlayApiHandler : MonoBehaviour
             Type = "title",
             Id = PlayFabSettings.staticSettings.TitleId
         };
-        //GuestLogin();
+        // GuestLogin();
 
     }
     // ENABLE_PLAYFABSERVER_API symbol denotes this is an admin-level game server and not a game client.
@@ -130,18 +130,11 @@ public class PlayApiHandler : MonoBehaviour
         // Continued from above example...
         PurchaseInventoryItemsRequest purchaseRequest = new()
         {
-            AuthenticationContext = gameAuthContext,
+            // AuthenticationContext = gameAuthContext,
             Amount = amount,
-
-            //StoreId = "1ea5d018-b9a8-4f9a-ba69-9a73935b3457",
             Item = new InventoryItemReference
             {
                 Id = "87203d93-c228-44b8-b81b-8d278cdcda9e"
-                //AlternateId = new AlternateId
-                //{
-                //    Type = "FriendlyId",
-                //    Value = "yul"
-                // }
             },
             Entity = entity,
             PriceAmounts = priceAmounts
@@ -206,29 +199,29 @@ public class PlayApiHandler : MonoBehaviour
     }
 
 
-    public static void FetchApiPolicy(Action nextAction = null)
-    {
-        PlayFabAdminAPI.GetPolicy(new GetPolicyRequest()
-        {
-            PolicyName = "ApiPolicy"
-        }, result =>
-        {
-            Debug.Log(result.PolicyName);
-            foreach (var statement in result.Statements)
-            {
-                Debug.Log("Action: " + statement.Action);
-                Debug.Log("Comment: " + statement.Comment);
-                if (statement.ApiConditions != null)
-                    Debug.Log("ApiCondition.HashSignatureOrEncryption: " + statement.ApiConditions.HasSignatureOrEncryption);
-                Debug.Log("Effect: " + statement.Effect);
-                Debug.Log("Principal: " + statement.Principal);
-                Debug.Log("Resource: " + statement.Resource);
-            }
+    // public static void FetchApiPolicy(Action nextAction = null)
+    // {
+    //     PlayFabAdminAPI.GetPolicy(new GetPolicyRequest()
+    //     {
+    //         PolicyName = "ApiPolicy"
+    //     }, result =>
+    //     {
+    //         Debug.Log(result.PolicyName);
+    //         foreach (var statement in result.Statements)
+    //         {
+    //             Debug.Log("Action: " + statement.Action);
+    //             Debug.Log("Comment: " + statement.Comment);
+    //             if (statement.ApiConditions != null)
+    //                 Debug.Log("ApiCondition.HashSignatureOrEncryption: " + statement.ApiConditions.HasSignatureOrEncryption);
+    //             Debug.Log("Effect: " + statement.Effect);
+    //             Debug.Log("Principal: " + statement.Principal);
+    //             Debug.Log("Resource: " + statement.Resource);
+    //         }
 
-            if (nextAction != null) nextAction();
+    //         if (nextAction != null) nextAction();
 
-        }, error => Debug.LogError(error.GenerateErrorReport()));
-    }
+    //     }, error => Debug.LogError(error.GenerateErrorReport()));
+    // }
 
     public static void GuestLogin()
     {
