@@ -11,19 +11,21 @@ using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
 {
     // Items list, configurable via inspector
     private List<PlayFab.EconomyModels.CatalogItem> Catalog;
-    public Text balance;
+    public TextMeshProUGUI balance;
+    public Button loginStatus;
     // The Unity Purchasing system
     private static IStoreController m_StoreController;
     private static IExtensionProvider m_StoreExtensionProvider;
     // Bootstrap the whole thing
     public void Start()
     {
+        loginStatus.GetComponent<UnityEngine.UI.Image>().color = Color.red;
+
         // Make PlayFab log in
         Login();
     }
@@ -84,11 +86,16 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
             CustomId = "#req45"
             //AndroidDeviceId = SystemInfo.deviceUniqueIdentifier
         }, result => {
+            loginStatus.GetComponent<UnityEngine.UI.Image>().color = Color.green;
             Debug.Log("Logged in " + SystemInfo.deviceUniqueIdentifier);
             FetchPlayerGoldBalance();
             // Refresh available items
             RefreshIAPItems();
-        }, error => Debug.LogError(error.GenerateErrorReport()));
+        }, error => {
+            loginStatus.GetComponent<UnityEngine.UI.Image>().color = Color.red;
+
+            Debug.LogError(error.GenerateErrorReport());
+            });
     }
 
     private void RefreshIAPItems()
