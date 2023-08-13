@@ -14,7 +14,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TokenPurchase.unity
     guid: c60cc0cd60f6fdf4ba1dce31fa2d7925
-  - enabled: 1
-    path: Assets/Scenes/AndroidIAP.unity
-    guid: 41b59d2024525774e9116089778bbc44
   m_configObjects: {}

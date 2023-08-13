@@ -17,7 +17,7 @@ public class PurchaseItemUi : MonoBehaviour
     public void UpdatePurchasePanel(GameStoreItem storeItem)
     {
         ItemAmountText.text = "+" + storeItem.GameItemAmount.ToString();
-        ItemPriceText.text = storeItem.GameItemPrice.Amount.ToString() + "CC";
+        ItemPriceText.text = storeItem.GameItemPrice.ToString() + "CC";
         ItemDescriptionText.text = storeItem.GameItemDescription.ToString();
         ItemName.text = storeItem.GameItemName;
         GameStoreItem = storeItem;
@@ -31,7 +31,7 @@ public class PurchaseItemUi : MonoBehaviour
 
     public void OnPurchaseItem()
     {
+        print("e don start");
         GameManager.Instance.PurchaseStoreItem(GameStoreItem);
-        this.gameObject.SetActive(false);
     }
 }

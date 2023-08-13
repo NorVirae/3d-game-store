@@ -155,11 +155,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-<<<<<<< HEAD
-    Android: com.quiva.GameItemsStore
-=======
     Android: com.quiva.eoistore
->>>>>>> dd7b84c0b16d33fdde6ea54ce36fe2b129202ec5
   buildNumber:
     Standalone: 0
     iPhone: 0
@@ -167,7 +163,7 @@ PlayerSettings:
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 4
   AndroidMinSdkVersion: 22
-  AndroidTargetSdkVersion: 0
+  AndroidTargetSdkVersion: 31
   AndroidPreferredInstallLocation: 1
   aotOptions: 
   stripEngineCode: 1
@@ -253,13 +249,8 @@ PlayerSettings:
   AndroidTargetDevices: 1
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-<<<<<<< HEAD
-  AndroidKeystoreName: '{dedicated}: eoi.keystore'
-  AndroidKeyaliasName: presh
-=======
   AndroidKeystoreName: C:/Users/norbe/Documents/Quiva/EdgeOfInfinity/EOIBuild/newEoi.keystore
   AndroidKeyaliasName: frank
->>>>>>> dd7b84c0b16d33fdde6ea54ce36fe2b129202ec5
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
   AndroidIsGame: 1
@@ -850,8 +841,8 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Template3D
-  metroPackageVersion: 1.0.0.0
+  metroPackageName: Template_3D
+  metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -859,7 +850,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: Template_3D
   wsaImages: {}
-  metroTileShortName: Game Items Store
+  metroTileShortName: 
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
@@ -927,19 +918,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-<<<<<<< HEAD
-  cloudProjectId: 832c0733-e0fa-4d79-99b8-f822096b3d80
-  framebufferDepthMemorylessMode: 0
-  qualitySettingsNames: []
-  projectName: Game Items Store (1)
-  organizationId: nkwuap
-=======
   cloudProjectId: a682aeb4-7307-414b-9802-69d027aa95c5
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Game Items Store
   organizationId: vyrra
->>>>>>> dd7b84c0b16d33fdde6ea54ce36fe2b129202ec5
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 

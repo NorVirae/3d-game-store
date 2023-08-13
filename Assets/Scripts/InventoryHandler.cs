@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Newtonsoft.Json;
-
 
 public class InventoryHandler : MonoBehaviour
 {
@@ -20,7 +18,7 @@ public class InventoryHandler : MonoBehaviour
         }
     }
 
-    void OnEnable()
+    void Start()
     {
         UpdateInventoryItems();
     }
@@ -32,13 +30,10 @@ public class InventoryHandler : MonoBehaviour
 
     void UpdateInventoryItems()
     {
-
         foreach (Transform item in inventoryCardItemsContainer)
         {
             item.gameObject.SetActive(false);
         }
-
-
         for (int i = 0; i < InventoryItems.Length; i++)
         {
             if (i < inventoryCardItemsContainer.childCount)
