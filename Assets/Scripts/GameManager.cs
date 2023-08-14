@@ -47,7 +47,7 @@ public class GameManager : Singleton<GameManager>
             GameItem item = new GameItem
             {
                 GameItemId = inventoryItem.Id,
-                // GameItemName = catItem.Title.GetValueOrDefault("NEUTRAL"),
+                GameItemName = inventoryItem.Id,
                 // GameItemDescription = catItem.Description.GetValueOrDefault("NEUTRAL"),
                 GameItemAmount = (float)inventoryItem.Amount,
                 // ItemImage = catItem.Images[0];

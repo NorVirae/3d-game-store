@@ -31,7 +31,7 @@ public class StoreHandler : MonoBehaviour
     private void Start()
     {
         purchasePanel.gameObject.SetActive(false);
-        Invoke(nameof(updateStoreItems), (storeItems.Length > 0) ? 0 : 5);
+        Invoke(nameof(updateStoreItems), (storeItems.Length > 0) ? 0 : 10);
     }
 
     public void OnInventoryButtonClicked()

@@ -17,7 +17,7 @@ public class PurchaseItemUi : MonoBehaviour
     public void UpdatePurchasePanel(GameStoreItem storeItem)
     {
         ItemAmountText.text = "+" + storeItem.GameItemAmount.ToString();
-        ItemPriceText.text = storeItem.GameItemPrice.ToString() + "CC";
+        ItemPriceText.text = storeItem.GameItemPrice.Amount.ToString() + "CC";
         ItemDescriptionText.text = storeItem.GameItemDescription.ToString();
         ItemName.text = storeItem.GameItemName;
         GameStoreItem = storeItem;
