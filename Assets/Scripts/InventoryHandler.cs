@@ -18,7 +18,7 @@ public class InventoryHandler : MonoBehaviour
         }
     }
 
-    void Start()
+    void OnEnable()
     {
         UpdateInventoryItems();
     }
@@ -34,6 +34,8 @@ public class InventoryHandler : MonoBehaviour
         {
             item.gameObject.SetActive(false);
         }
+
+
         for (int i = 0; i < InventoryItems.Length; i++)
         {
             if (i < inventoryCardItemsContainer.childCount)

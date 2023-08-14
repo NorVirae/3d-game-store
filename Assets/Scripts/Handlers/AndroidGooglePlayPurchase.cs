@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
 {
@@ -29,7 +30,7 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
         // Make PlayFab log in
         Login();
     }
-    
+
 
     //public void OnGUI()
     //{
@@ -54,6 +55,11 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
     //        }
     //    }
     //}
+
+    public void BackToStore()
+    {
+        SceneManager.LoadScene("InGameStore");
+    }
 
     public void FetchPlayerGoldBalance()
     {
@@ -85,17 +91,19 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
             CreateAccount = true,
             CustomId = "#req45"
             //AndroidDeviceId = SystemInfo.deviceUniqueIdentifier
-        }, result => {
+        }, result =>
+        {
             loginStatus.GetComponent<UnityEngine.UI.Image>().color = Color.green;
             Debug.Log("Logged in " + SystemInfo.deviceUniqueIdentifier);
             FetchPlayerGoldBalance();
             // Refresh available items
             RefreshIAPItems();
-        }, error => {
+        }, error =>
+        {
             loginStatus.GetComponent<UnityEngine.UI.Image>().color = Color.red;
 
             Debug.LogError(error.GenerateErrorReport());
-            });
+        });
     }
 
     private void RefreshIAPItems()
@@ -105,7 +113,8 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
             Filter = "Type eq 'currency'"
         };
         Debug.Log("got in here");
-        PlayFabEconomyAPI.SearchItems(searchItemsRequest, result => {
+        PlayFabEconomyAPI.SearchItems(searchItemsRequest, result =>
+        {
             Catalog = result.Items;
             Debug.Log("Get Catalog");
             // Make UnityIAP initialize
@@ -150,7 +159,7 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
         print("Initialised");
         m_StoreController = controller;
 
-        
+
         //// Purchasing has succeeded initializing. Collect our Purchasing references.
         //// Overall Purchasing system, configured with products for this application.
         //m_StoreController = controller;
@@ -314,7 +323,7 @@ public class GooglePurchase
 
     //Payload
 
-    
+
 }
 
 public class PayloadData
@@ -331,4 +340,5 @@ public class PayloadData
         payload.JsonData = JsonUtility.FromJson<JsonData>(payload.json);
         return payload;
     }
+
 }
