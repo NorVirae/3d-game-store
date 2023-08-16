@@ -32,6 +32,19 @@ public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
     }
 
 
+    public void ExecuteRedeemCouponApiCall(string url)
+    {
+        if (AwsApi.Instance != null)
+        {
+            StartCoroutine(AwsApi.Instance.RedeemCouponApiCall(url));
+
+        }
+        else
+        {
+            Debug.LogError("AwsApi Instance is null.");
+        }
+    }
+
     //public void OnGUI()
     //{
     //    // this line just scales the ui up for high-res devices
