@@ -118,4 +118,17 @@ public class PreshPlayFabApiHandler : MonoBehaviour
     {
         Debug.Log(error);
     }
+
+    public void RedeemCouponItem()
+    {
+        var request = new RedeemCouponRequest
+        {
+            
+        };
+
+        PlayFabClientAPI.RedeemCoupon(request, (RedeemCouponResult result) =>
+        {
+            print(result.GrantedItems[0].DisplayName);
+        }, onError);
+    }
 }

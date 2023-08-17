@@ -23,7 +23,7 @@ public class InventoryCardUi : MonoBehaviour
     {
         // ItemImage.sprite = item.ItemImage;
         ItemAmount.text = item.GameItemAmount.ToString();
-        ItemName.text = item.GameItemName;
+        // ItemName.text = item.GameItemName;
         Index = index;
     }
 }

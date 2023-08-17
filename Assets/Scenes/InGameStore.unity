@@ -1313,6 +1313,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1316513546}
     m_Modifications:
+    - target: {fileID: 7479016268195369863, guid: e7506953defdf894d8faeb160ba60acc, type: 3}
+      propertyPath: m_text
+      value: ShotelSword
+      objectReference: {fileID: 0}
     - target: {fileID: 7479016268477464386, guid: e7506953defdf894d8faeb160ba60acc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

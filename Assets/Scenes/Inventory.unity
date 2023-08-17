@@ -158,6 +158,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -4.726486
       objectReference: {fileID: 0}
+    - target: {fileID: 8043251432127420513, guid: 7f7c831db75d39e4592c14124d29230f, type: 3}
+      propertyPath: m_text
+      value: Epad Key
+      objectReference: {fileID: 0}
     - target: {fileID: 8043251432559220530, guid: 7f7c831db75d39e4592c14124d29230f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 5.699997
@@ -295,6 +299,14 @@ PrefabInstance:
     - target: {fileID: 8043251432127420512, guid: 7f7c831db75d39e4592c14124d29230f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -4.726486
+      objectReference: {fileID: 0}
+    - target: {fileID: 8043251432127420513, guid: 7f7c831db75d39e4592c14124d29230f, type: 3}
+      propertyPath: m_text
+      value: ShotelSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 8043251432127420513, guid: 7f7c831db75d39e4592c14124d29230f, type: 3}
+      propertyPath: m_fontSize
+      value: 12.95
       objectReference: {fileID: 0}
     - target: {fileID: 8043251432559220530, guid: 7f7c831db75d39e4592c14124d29230f, type: 3}
       propertyPath: m_AnchoredPosition.y

@@ -33,5 +33,6 @@ public class PurchaseItemUi : MonoBehaviour
     {
         print("e don start");
         GameManager.Instance.PurchaseStoreItem(GameStoreItem);
+        this.gameObject.SetActive(false);
     }
 }
