@@ -1,38 +1,98 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
+using UnityEngine.Networking;
+using System.Collections;
+using System.Text;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using TMPro;
+using System;
 
 public class VoucherCodeHandler : MonoBehaviour
 {
 
-    [SerializeField]
-    TextField voucherInput;
-
-    public struct VoucherModel
+    struct ResultData
     {
+        public bool Success;
+        public string Message;
         public string VoucherCode;
-        public int ItemAmount;
-        public string ItemId;
-        public string CreationDate;
+        public int GoldQuantity;
     }
+    [SerializeField]
+    TMP_InputField voucherInput;
 
-    void Start()
+    // void Start()
+    // {
+    // StartCoroutine(SendJsonRequest());
+    // }
+    // IEnumerator SendJsonRequest()
+    // {
+    //     string url = "https://rk297h1zsj.execute-api.eu-north-1.amazonaws.com/Test/%7Bvoucher+%7D";
+
+    //     string jsonRequestBody = "{\"Email\": \"nkwuap@gmail.com\",\"GoldQuanity\":100}";
+
+    //     var requestHeaders = new Dictionary<string, string>();
+    //     requestHeaders.Add("Content-Type", "application/json");
+
+    //     using (var request = UnityWebRequest.Post(url, jsonRequestBody))
+    //     {
+    //         foreach (var header in requestHeaders)
+    //         {
+    //             request.SetRequestHeader(header.Key, header.Value);
+    //         }
+
+    //         byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonRequestBody);
+    //         request.uploadHandler = new UploadHandlerRaw(jsonBytes);
+    //         request.downloadHandler = new DownloadHandlerBuffer();
+    //         yield return request.SendWebRequest();
+    //         if (request.result != UnityWebRequest.Result.Success)
+    //         {
+    //             Debug.LogError("Error: " + request.error);
+    //         }
+    //         else
+    //         {
+    //             Debug.Log("Response: " + JsonConvert.DeserializeObject(request.downloadHandler.text));
+    //         }
+    //     }
+    // }
+
+    public void onRedeemCodeClciked()
     {
 
+        StartCoroutine(ConsumeVoucher(voucherInput.text));
     }
 
-    public void RetrieveVoucherCode()
+    IEnumerator ConsumeVoucher(string vcCode)
     {
-        string voucherCode = voucherInput.text;
+        PreshPlayFabApiHandler preshFab = GameObject.Find("PlayfabApi").GetComponent<PreshPlayFabApiHandler>();
+        string url = "https://mwpadqpx4m.execute-api.eu-north-1.amazonaws.com/Test/{redeem+}";
 
+        string jsonRequestBody = "{\"VoucherCode\":" + "\"" + vcCode + "\"" + "}";
 
-    }
+        var requestHeaders = new Dictionary<string, string>();
+        requestHeaders.Add("Content-Type", "application/json");
 
-    void findVoucherItem(string voicherCode)
-    {
+        using (var request = UnityWebRequest.Post(url, jsonRequestBody))
+        {
+            foreach (var header in requestHeaders)
+            {
+                request.SetRequestHeader(header.Key, header.Value);
+            }
 
+            byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonRequestBody);
+            request.uploadHandler = new UploadHandlerRaw(jsonBytes);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            yield return request.SendWebRequest();
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Error: " + request.error);
+            }
+            else
+            {
+                Debug.Log("Response: " + JsonConvert.DeserializeObject(request.downloadHandler.text));
+                ResultData result = JsonConvert.DeserializeObject<ResultData>(request.downloadHandler.text);
+                preshFab.AddGold(result.GoldQuantity);
+            }
+        };
     }
 }
 

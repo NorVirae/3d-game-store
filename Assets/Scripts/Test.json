@@ -1,26 +1,34 @@
-[
+{"VoucherCodes": [
     {
         "ItemAmount": 3,
         "ItemId": "12345",
         "VoucherCode": "UVH5G",
-        "CreationDate": "07:30pm"
+        "CreationDate": "07:30pm",
+        "ExpiryDate": "10:20pm",
+        "IsConsumed": false
     },
     {
         "ItemAmount": 10,
         "ItemId": "67890",
         "VoucherCode": "KUVR2",
-        "CreationDate": "09:30pm"
+        "CreationDate": "09:30pm",
+        "ExpiryDate": "10:20pm",
+        "IsConsumed": false
     },
     {
         "ItemAmount": 5,
         "ItemId": "24680",
         "VoucherCode": "UWX32",
-        "CreationDate": "11:30pm"
+        "CreationDate": "11:30pm",
+        "ExpiryDate": "10:20pm",
+        "IsConsumed": false
     },
     {
         "ItemAmount": 7,
         "ItemId": "13579",
         "VoucherCode": "AWSU0",
-        "CreationDate": "00:30pm"
+        "CreationDate": "00:30pm",
+        "ExpiryDate": "10:20pm",
+        "IsConsumed": false
     }
-]
+]}

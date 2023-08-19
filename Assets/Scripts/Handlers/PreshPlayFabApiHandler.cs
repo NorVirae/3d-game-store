@@ -5,6 +5,7 @@ using PlayFab;
 using PlayFab.EconomyModels;
 using Newtonsoft.Json;
 using GameModels;
+using UnityEditor.PackageManager;
 
 public class PreshPlayFabApiHandler : MonoBehaviour
 {
@@ -26,8 +27,8 @@ public class PreshPlayFabApiHandler : MonoBehaviour
 
     private void onLoginSuccess(LoginResult obj)
     {
-        GetPlayerInventoryItems();
-        GetStoreItems();
+        // GetPlayerInventoryItems();
+        // GetStoreItems();
     }
 
     void GetPlayerInventoryItems()
@@ -123,12 +124,37 @@ public class PreshPlayFabApiHandler : MonoBehaviour
     {
         var request = new RedeemCouponRequest
         {
-            
+
         };
 
         PlayFabClientAPI.RedeemCoupon(request, (RedeemCouponResult result) =>
         {
             print(result.GrantedItems[0].DisplayName);
         }, onError);
+    }
+
+    // 1474
+    public void AddGold(float amount)
+    {
+        var request = new AddInventoryItemsRequest
+        {
+            Amount = (int?)amount,
+            Item = new InventoryItemReference
+            {
+                Id = "a1188a84-e59a-45c5-9c8c-82bf426b3eae"
+            },
+            Entity = new PlayFab.EconomyModels.EntityKey
+            {
+                Id = "362BF6719D3C0236",
+                Type = "title_player_account",
+            },
+        };
+        PlayFabEconomyAPI.AddInventoryItems(request, (AddInventoryItemsResponse result) =>
+        {
+            print(result.CustomData);
+        }, (PlayFabError err) =>
+        {
+            print(err);
+        });
     }
 }
