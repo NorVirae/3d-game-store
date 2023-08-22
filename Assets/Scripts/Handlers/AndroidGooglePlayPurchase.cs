@@ -13,7 +13,7 @@ using UnityEngine.Purchasing.Extension;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class AndroidGooglePlayPurchase : MonoBehaviour, IStoreListener
+public class AndroidGooglePlayPurchase : Singleton<AndroidGooglePlayPurchase>, IStoreListener
 {
     // Items list, configurable via inspector
     private List<PlayFab.EconomyModels.CatalogItem> Catalog;

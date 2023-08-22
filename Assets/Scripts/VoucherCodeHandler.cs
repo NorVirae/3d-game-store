@@ -19,11 +19,26 @@ public class VoucherCodeHandler : MonoBehaviour
     }
     [SerializeField]
     TMP_InputField voucherInput;
+    [SerializeField]
+    GameObject errorPanel;
+    [SerializeField]
+    TextMeshProUGUI currencyAmount;
 
-    // void Start()
-    // {
-    // StartCoroutine(SendJsonRequest());
-    // }
+    PreshPlayFabApiHandler preshFab;
+    void Start()
+    {
+        preshFab = GameObject.Find("PlayfabApi").GetComponent<PreshPlayFabApiHandler>();
+
+        preshFab.onLoginSuccessfull += () =>
+        {
+            preshFab.updatePlayerGoldBalanceUi((goldAmount) =>
+            {
+                currencyAmount.text = goldAmount;
+            });
+        };
+        // preshFab.updatePlayerGoldBalanceUi();
+        // StartCoroutine(SendJsonRequest());
+    }
     // IEnumerator SendJsonRequest()
     // {
     //     string url = "https://rk297h1zsj.execute-api.eu-north-1.amazonaws.com/Test/%7Bvoucher+%7D";
@@ -63,36 +78,54 @@ public class VoucherCodeHandler : MonoBehaviour
 
     IEnumerator ConsumeVoucher(string vcCode)
     {
-        PreshPlayFabApiHandler preshFab = GameObject.Find("PlayfabApi").GetComponent<PreshPlayFabApiHandler>();
-        string url = "https://mwpadqpx4m.execute-api.eu-north-1.amazonaws.com/Test/{redeem+}";
-
-        string jsonRequestBody = "{\"VoucherCode\":" + "\"" + vcCode + "\"" + "}";
-
-        var requestHeaders = new Dictionary<string, string>();
-        requestHeaders.Add("Content-Type", "application/json");
-
-        using (var request = UnityWebRequest.Post(url, jsonRequestBody))
+        if (preshFab.CheckLoggin())
         {
-            foreach (var header in requestHeaders)
-            {
-                request.SetRequestHeader(header.Key, header.Value);
-            }
+            string url = "https://mwpadqpx4m.execute-api.eu-north-1.amazonaws.com/Test/{redeem+}";
 
-            byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonRequestBody);
-            request.uploadHandler = new UploadHandlerRaw(jsonBytes);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            yield return request.SendWebRequest();
-            if (request.result != UnityWebRequest.Result.Success)
+            string jsonRequestBody = "{\"VoucherCode\":" + "\"" + vcCode + "\"" + "}";
+
+            var requestHeaders = new Dictionary<string, string>();
+            requestHeaders.Add("Content-Type", "application/json");
+
+            using (var request = UnityWebRequest.Post(url, jsonRequestBody))
             {
-                Debug.LogError("Error: " + request.error);
-            }
-            else
-            {
-                Debug.Log("Response: " + JsonConvert.DeserializeObject(request.downloadHandler.text));
-                ResultData result = JsonConvert.DeserializeObject<ResultData>(request.downloadHandler.text);
-                preshFab.AddGold(result.GoldQuantity);
-            }
-        };
+                foreach (var header in requestHeaders)
+                {
+                    request.SetRequestHeader(header.Key, header.Value);
+                }
+
+                byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonRequestBody);
+                request.uploadHandler = new UploadHandlerRaw(jsonBytes);
+                request.downloadHandler = new DownloadHandlerBuffer();
+                yield return request.SendWebRequest();
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log("Error: " + request.error);
+                    errorPanel.SetActive(true);
+                }
+                else
+                {
+                    Debug.Log("Response: " + JsonConvert.DeserializeObject(request.downloadHandler.text));
+                    ResultData result = JsonConvert.DeserializeObject<ResultData>(request.downloadHandler.text);
+                    preshFab.AddGold(result.GoldQuantity, () =>
+                    {
+                        preshFab.updatePlayerGoldBalanceUi((amount) =>
+                        {
+                            currencyAmount.text = amount;
+                        });
+                    });
+                }
+            };
+        }
+        else
+        {
+            Debug.Log("Loggin to use voucher");
+        }
+    }
+
+    public void closeErrorPopup()
+    {
+        errorPanel.SetActive(false);
     }
 }
 
