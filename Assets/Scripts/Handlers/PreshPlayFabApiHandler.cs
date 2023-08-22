@@ -5,8 +5,6 @@ using PlayFab;
 using PlayFab.EconomyModels;
 using Newtonsoft.Json;
 using GameModels;
-using UnityEditor.PackageManager;
-using System.Threading.Tasks;
 using System;
 
 public class PreshPlayFabApiHandler : MonoBehaviour
@@ -65,8 +63,8 @@ public class PreshPlayFabApiHandler : MonoBehaviour
 
     private void onLoginSuccess(LoginResult obj)
     {
-        // GetPlayerInventoryItems();
-        // GetStoreItems();
+        GetPlayerInventoryItems();
+        GetStoreItems();
         print("Login success");
         onLoginSuccessfull();
     }

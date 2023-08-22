@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TokenPurchase.unity
     guid: c60cc0cd60f6fdf4ba1dce31fa2d7925
+  - enabled: 1
+    path: Assets/Scenes/VoucherRedeem.unity
+    guid: f50e8227590d76c41bdbf934e51b9283
   m_configObjects: {}

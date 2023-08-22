@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using TMPro;
 using System;
+using UnityEngine.SceneManagement;
 
 public class VoucherCodeHandler : MonoBehaviour
 {
@@ -126,6 +127,11 @@ public class VoucherCodeHandler : MonoBehaviour
     public void closeErrorPopup()
     {
         errorPanel.SetActive(false);
+    }
+
+    public void goToStore()
+    {
+        SceneManager.LoadScene("InGameStore");
     }
 }
 
