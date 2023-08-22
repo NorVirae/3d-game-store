@@ -43,7 +43,9 @@ public class GameManager : Singleton<GameManager>
                 InvenoryItems.Find((item) => item.GameItemId == inventoryItem.Id).GameItemAmount = (float)inventoryItem.Amount;
                 return;
             }
+            
             print(JsonConvert.SerializeObject(inventoryItem));
+            
             GameItem item = new GameItem
             {
                 GameItemId = inventoryItem.Id,

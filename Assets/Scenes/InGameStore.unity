@@ -773,7 +773,7 @@ GameObject:
   - component: {fileID: 343849192}
   - component: {fileID: 343849191}
   m_Layer: 5
-  m_Name: InventoryButton (1)
+  m_Name: voucherButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -846,7 +846,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 498798631}
         m_TargetAssemblyTypeName: StoreHandler, Assembly-CSharp
-        m_MethodName: OnInventoryButtonClicked
+        m_MethodName: onVoucherClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

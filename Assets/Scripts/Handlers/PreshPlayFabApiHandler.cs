@@ -27,46 +27,12 @@ public class PreshPlayFabApiHandler : MonoBehaviour
         PlayFabClientAPI.LoginWithCustomID(request, onLoginSuccess, onError);
     }
 
-    // public async Task CheckUserLoginStatus()
-    // {
-    //     var request = new GetPlayerCombinedInfoRequest
-    //     {
-    //         PlayFabId = "USER_PLAYFAB_ID", // Replace with the user's PlayFab ID
-    //         InfoRequestParameters = new GetPlayerCombinedInfoRequestParams
-    //         {
-    //             GetPlayerProfile = true
-    //         }
-    //     };
-
-    //     try
-    //     {
-    //         var result = await PlayFabClientAPI.GetPlayerCombinedInfoAsync(request);
-
-    //         // Check if the player profile was returned
-    //         if (result.InfoResultPayload.PlayerProfile != null)
-    //         {
-    //             // Player is logged in
-    //             Debug.Log("Player is logged in.");
-    //         }
-    //         else
-    //         {
-    //             // Player is not logged in
-    //             Debug.Log("Player is not logged in.");
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Debug.LogError("Error checking user login status: " + ex.Message);
-    //     }
-    // }
-
-
     private void onLoginSuccess(LoginResult obj)
     {
         GetPlayerInventoryItems();
         GetStoreItems();
         print("Login success");
-        onLoginSuccessfull();
+        onLoginSuccessfull?.Invoke();
     }
 
     void GetPlayerInventoryItems()

@@ -18,9 +18,10 @@ public class InventoryHandler : MonoBehaviour
         }
     }
 
-    void OnEnable()
+    void Start()
     {
-        UpdateInventoryItems();
+        Invoke(nameof(UpdateInventoryItems), (InventoryItems.Length > 0) ? 0 : 7);
+    
     }
 
     public void OnStoreClicked()
